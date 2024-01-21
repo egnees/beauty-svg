@@ -1,0 +1,624 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+  
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" 
+          content="width=device-width, 
+                   height=device-height,
+                   initial-scale=1.0">
+    <title>Slideshow</title> 
+</head>
+
+<body> 
+    <svg id="field" width="100%" height="100%" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+        <rect
+            id="rect-1"
+            x="0"
+            y="0"
+            width="200"
+            height="100"
+            fill="blue"
+            stroke="black"
+            stroke-width="5"/>
+
+        <rect
+            id="rect-2"
+            x="160"
+            y="80"
+            width="50"
+            height="30"
+            fill="blue"
+            stroke="black"
+            stroke-width="5"
+            visibility="hidden"/>
+
+        <text id="text-1" fill="yellow" x="40" y="40" font-size="20">Hello, I'm text!</text>
+    </svg>
+
+    <div id="left-block" style="margin-left: 1%; width: 48.5%; display: inline-block; text-align: left;">
+        <div>
+            Use left-right arrows to navigate between slides.
+        </div>
+        <div>
+            Use up-down arrows to adjust interval between slides.
+        </div>
+        <div>
+            Use space to enable and disable automatic slide show.
+        </div>
+    </div>
+
+    <div id="right-block" style="margin-right: 1%; width: 49%; display: inline-block; text-align: right;">
+        <div id="slide-counter">
+            Slide: 0/0
+        </div>
+        <div id="speed-tracker">
+            Interval: 100ms per slide
+        </div>
+    </div>
+
+    <script>
+        // Id of the svg element.
+        let svg_id = "field";
+
+        // Id of slide counter text element.
+        let slide_counter = "slide-counter";
+
+        // Id of speed-tracker text element.
+        let speed_tracker = "speed-tracker";
+
+        // Changed per frame on the field.
+        let frame_changes = 
+        [
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+                ["rect-1", "visibility", "visible"],
+                ["rect-2", "fill", "blue"],
+                ["rect-2", "stoke", "black"],
+                ["rect-2", "stroke-width", "5"],
+                ["rect-2", "visibility", "hidden"],
+                ["text-1", "visibility", "visible"],
+                ["text-1", "innerHTML", "Hello, I'm text!"],
+                ["text-1", "fill", "yellow"],
+                ["text-1", "font-size", "20"],
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+                ["text-1", "innerHTML", "Hello, I'm purple text!"],
+                ["text-1", "fill", "purple"],
+                ["text-1", "font-size", "10"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"],
+                ["text-1", "visibility", "hidden"],
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+                ["text-1", "visibility", "visible"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],[
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+            [
+                ["rect-1", "fill", "red"],
+                ["rect-1", "stroke", "purple"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "visible"]
+            ],
+            [
+                ["rect-1", "fill", "blue"],
+                ["rect-1", "stroke", "black"],
+                ["rect-1", "stroke-width", "5"],
+            ],
+            [
+                ["rect-1", "fill", "green"],
+                ["rect-2", "visibility", "hidden"]
+            ],
+        ];
+    </script>
+
+    <script src="slides-script.js">
+        // Here all slide management logic is implemented.
+    </script>
+</body> 

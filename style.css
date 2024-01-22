@@ -1,0 +1,35 @@
+.grid-field-stat-container {
+    display: grid;
+    grid-template-columns: 80% 20%;
+    border: 1px solid
+}
+
+.grid-text-blocks-container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.left-block {
+    margin-left: 1%;
+    margin-top: 0.5%;
+    text-align: left;
+    font-size: 18px;
+    font-style: italic;
+}
+
+.right-block {
+    margin-right: 1%; 
+    margin-top: 0.5%;
+    text-align: right;
+    font-size: 18px;
+}
+
+.title {
+    font-family: "Times New Roman", Times, serif;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 2%;
+    margin-left: 2%;
+    margin-right: 2%;
+}

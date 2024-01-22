@@ -65,7 +65,7 @@ function find_previous_attr_value(id, attr, frame) {
 // Allows to set attribute to object.
 function set_attr(id, attr, value) {
     if (attr == "innerHTML") {
-        svg_doc.getElementById(id).innerHTML = value;    
+        document.getElementById(id).innerHTML = value;    
     } else {
         svg_doc.getElementById(id).setAttribute(attr, value);
     }
@@ -209,6 +209,51 @@ window.addEventListener("keydown", function(e) {
         e.preventDefault();
     }
 }, false);
+
+// SVG viewBox in format (x1, y1, x2, y2)
+var viewBoxValues = svg_doc.getAttribute("viewBox").split(" ");
+
+// Update SVG viewBox values
+function update_view_box(x1, y1, x2, y2) {
+    viewBoxValues[0] = x1;
+    viewBoxValues[1] = y1;
+    viewBoxValues[2] = x2;
+    viewBoxValues[3] = y2;
+    svg_doc.setAttribute("viewBox", viewBoxValues.join(" "));
+}
+
+// Implementation of svg scaling.
+let scale = 1.0;
+const SCALE_FACTOR = -0.000000001;
+
+// Svg point, created once.
+var pt = svg_doc.createSVGPoint();
+
+// Wheel zoom handler.
+function wheelZoom(event) {
+    event.preventDefault();
+
+    pt.x = event.clientX;
+    pt.y = event.clientY;
+
+    // Transformed point relative to enclosing SVG.
+    pt = pt.matrixTransform(svg_doc.getScreenCTM().inverse());
+
+    let scale_delta = SCALE_FACTOR * event.deltaY;
+
+    let new_x1 = pt.x - (pt.x - viewBoxValues[0]) * scale_delta;
+    let new_y1 = pt.y - (pt.y - viewBoxValues[1]) * scale_delta;
+
+    let new_x2 = pt.x + (viewBoxValues[2] - pt.x) * scale_delta;
+    let new_y2 = pt.y + (viewBoxValues[3] - pt.y) * scale_delta;
+
+    console.log(new_x1, new_y1, new_x2, new_y2);
+
+    // Update viewBox.
+    update_view_box(new_x1, new_y1, new_x2, new_y2);
+}
+
+// svg_doc.addEventListener("wheel", wheelZoom);
 
 // Add on load listener.
 document.addEventListener("DOMContentLoaded", function() {
